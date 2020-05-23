@@ -61,8 +61,14 @@ For more information use
 $make help
 ```
 
-# Local development
+# Development
 
 ```bash
 yarn run watch
 ```
+
+## API doc
+
+for api documentation please use:
+
+http://localhost/api/doc
