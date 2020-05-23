@@ -3,7 +3,7 @@
     <div class="item">
       <h1>Review Form</h1>
     </div>
-    <form @submit.prevent="send">
+    <form @change="check" @submit.prevent="send">
       <div class="item">
         <h1>1.</h1>
         <div class="scope">
@@ -70,7 +70,7 @@
       </div>
 
       <div class="item">
-        <button :disabled="score === 0" type="submit">
+        <button :disabled="hold" type="submit">
           SUBMIT
         </button>
       </div>
@@ -87,24 +87,32 @@ export default {
     hotelId: 2,
     score: 0,
     comment: "",
+    hold: true,
   }),
   methods: {
     newline() {
       this.comment = `${this.comment}\n`;
     },
+    check() {
+      if (this.score > 0) {
+        this.hold = false;
+      }
+    },
     async send() {
+      this.hold = true;
       if (this.score === 0) {
         alert("Please choise an SCORE");
       } else {
-        const payload = this.$data;
         axios
-          .post("/api/create-review", payload)
+          .post("/api/create-review", this.$data)
           .then((response) => {
             alert(response.data.status);
+            this.hold = false;
             this.score = 0;
             this.comment = "";
           })
           .catch((error) => {
+            this.hold = false;
             console.log("error", error);
           });
       }

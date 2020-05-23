@@ -76,7 +76,7 @@ class ApiController extends AbstractController
         $score = $data['score'];
         $comment = $data['comment'];
 
-        if (empty($hotelId) || empty($score) || empty($comment)) {
+        if (empty($hotelId) || empty($score)) {
             throw new \Exception('Expecting mandatory parameters!');
         }
 
