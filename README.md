@@ -69,6 +69,6 @@ yarn run watch
 
 ## API doc
 
-for api documentation please use:
+For api documentation please look:
 
 http://localhost/api/doc
