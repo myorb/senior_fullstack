@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
+use Swagger\Annotations as SWG;
 
 class ApiController extends AbstractController
 {
@@ -27,7 +28,24 @@ class ApiController extends AbstractController
     }
 
     /**
-     * @Route("/api/average", name="average")
+     *
+     * The avarage score for an hotel
+     * 
+     * @Route("/api/average", name="average", methods={"GET"})
+     * @SWG\Response(
+     *     response=200,
+     *     description="Returns score",
+     *     @SWG\Schema(
+     *          @SWG\Property(property="score", type="number"),
+     *     )
+     * )
+     * @SWG\Parameter(
+     *     name="hotelId",
+     *     in="query",
+     *     type="string",
+     *     required=true,
+     *     description="Hotel id"
+     * )
      */
     public function getAverage(Request $request): JsonResponse
     {
@@ -49,7 +67,23 @@ class ApiController extends AbstractController
     }
 
     /**
-     * @Route("/api/reviews", name="review_list")
+     *
+     * Get list of reviews
+     * 
+     * @Route("/api/reviews", name="review_list", methods={"GET"})
+     * @SWG\Response(
+     *     response=200,
+     *     description="Returns score",
+     *     @SWG\Schema(
+     *          @SWG\Property(property="score", type="number"),
+     *     )
+     * )
+     * @SWG\Parameter(
+     *     name="hotelId",
+     *     in="query",
+     *     type="string",
+     *     description="List of reviews for specific hotel"
+     * )
      */
     public function getReviews(Request $request, SerializerInterface $serializer): JsonResponse
     {
@@ -66,7 +100,28 @@ class ApiController extends AbstractController
     }
 
     /**
-     * @Route("/api/create-review", name="create_review")
+     *
+     * Create review for an hotel
+     * 
+     * @Route("/api/create-review", name="create_review", methods={"POST"})
+     * @SWG\Response(
+     *     response=201,
+     *     description="Review created",
+     *     @SWG\Schema(
+     *          @SWG\Property(property="status", type="string"),
+     *     )
+     * )
+     * @SWG\Parameter(
+     *     name="body",
+     *     in="body",
+     *     required=true,
+     *     @SWG\Schema(
+     *         type="object",
+     *         @SWG\Property(property="hotelId", type="number"),
+     *         @SWG\Property(property="score", type="number"),
+     *         @SWG\Property(property="comment", type="string")
+     *     )
+     * )
      */
     public function postCreateReview(Request $request): JsonResponse
     {
