@@ -83,8 +83,8 @@
 import axios from "axios";
 
 export default {
+  props: { hotelId: String },
   data: () => ({
-    hotelId: 2,
     score: 0,
     comment: "",
     hold: true,
@@ -104,7 +104,10 @@ export default {
         alert("Please choise an SCORE");
       } else {
         axios
-          .post("/api/create-review", this.$data)
+          .post("/api/create-review", {
+            ...this.$data,
+            hotelId: this.hotelId,
+          })
           .then((response) => {
             alert(response.data.status);
             this.hold = false;
