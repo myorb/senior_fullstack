@@ -94,11 +94,20 @@ class ApiController extends AbstractController
         } else {
             $reviews = $this->reviewRepository->findBy(['hotel' => $hotelId]);
         }
-        // dd($reviews[0]->getComment());
-        die(json_encode($reviews));
 
-        $data = $serializer->serialize($reviews, JsonEncoder::FORMAT);
-        return new JsonResponse($reviews, Response::HTTP_OK, [], true);
+        $response = [];
+
+        foreach ($reviews as $review) {
+            $response[] = [
+                'id' => $review->getId(),
+                'score' => $review->getScore(),
+                'comment' => $review->getComment(),
+            ];
+        }
+
+        $data = $serializer->serialize($response, JsonEncoder::FORMAT);
+
+        return new JsonResponse($data, Response::HTTP_OK, [], true);
     }
 
     /**
@@ -128,10 +137,9 @@ class ApiController extends AbstractController
     public function postCreateReview(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
-
-        $hotelId = $data['hotelId'];
-        $score = $data['score'];
-        $comment = $data['comment'];
+        $hotelId = $data['hotelId'] ?? '';
+        $score = $data['score'] ?? 0;
+        $comment = $data['comment'] ?? '';
 
         if (empty($hotelId) || empty($score)) {
             throw new \Exception('Expecting mandatory parameters!');
