@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Hotel;
 use App\Entity\Review;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -25,12 +26,12 @@ class ReviewRepository extends ServiceEntityRepository
         $this->manager = $manager;
     }
 
-    public function saveReview(int $hotelId, $score, string $comment)
+    public function saveReview(Hotel $hotel, $score, string $comment)
     {
         $model = new Review();
 
         $model
-            ->setHotelId($hotelId)
+            ->setHotel($hotel)
             ->setScore($score)
             ->setComment($comment);
 
@@ -39,7 +40,7 @@ class ReviewRepository extends ServiceEntityRepository
         return true;
     }
 
-    public function getAvg(int $hotelId)
+    public function getAvg($hotelId)
     {
         $conn = $this->getEntityManager()->getConnection();
 
@@ -48,5 +49,12 @@ class ReviewRepository extends ServiceEntityRepository
         $stmt->execute(['hotelId' => $hotelId]);
 
         return $stmt->fetch();
+    }
+
+    public function toJson()
+    {
+        return [
+            'id' => $this->id,
+        ];
     }
 }

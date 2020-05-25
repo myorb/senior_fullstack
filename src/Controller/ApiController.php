@@ -92,11 +92,13 @@ class ApiController extends AbstractController
         if ($hotelId === null) {
             $reviews = $this->reviewRepository->findAll();
         } else {
-            $reviews = $this->reviewRepository->findBy(['hotel_id' => $hotelId]);
+            $reviews = $this->reviewRepository->findBy(['hotel' => $hotelId]);
         }
+        // dd($reviews[0]->getComment());
+        die(json_encode($reviews));
 
         $data = $serializer->serialize($reviews, JsonEncoder::FORMAT);
-        return new JsonResponse($data, Response::HTTP_OK, [], true);
+        return new JsonResponse($reviews, Response::HTTP_OK, [], true);
     }
 
     /**
@@ -141,7 +143,7 @@ class ApiController extends AbstractController
             throw new \Exception('Hotel not found.');
         }
 
-        $this->reviewRepository->saveReview($hotelId, $score, $comment);
+        $this->reviewRepository->saveReview($hotel, $score, $comment);
 
         return new JsonResponse(['status' => 'Created!'], Response::HTTP_CREATED);
     }
