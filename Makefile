@@ -23,3 +23,5 @@ migrate:
 	docker-compose run --rm php-fpm php bin/console doctrine:migrations:migrate
 	docker-compose run --rm php-fpm php bin/console doctrine:fixtures:load
 
+test:
+	docker-compose run --rm php-fpm php bin/phpunit
