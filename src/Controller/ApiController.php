@@ -12,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
 use Swagger\Annotations as SWG;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ApiController extends AbstractController
 {
@@ -58,12 +59,20 @@ class ApiController extends AbstractController
         $hotel = $this->hotelRepository->find($hotelId);
 
         if (!$hotel) {
-            throw new \Exception('Hotel not found.');
+            throw new NotFoundHttpException('Hotel not found.');
         }
 
         $data = $this->reviewRepository->getAvg($hotelId);
 
-        return new JsonResponse($data, Response::HTTP_OK);
+        $response = new JsonResponse($data, Response::HTTP_OK);
+
+        // cache for 3600 seconds
+        $response->setSharedMaxAge(3600);
+
+        // (optional) set a custom Cache-Control directive
+        $response->headers->addCacheControlDirective('must-revalidate', true);
+
+        return $response;
     }
 
     /**
@@ -84,21 +93,53 @@ class ApiController extends AbstractController
      *     type="string",
      *     description="List of reviews for specific hotel"
      * )
+     * @SWG\Parameter(
+     *     name="page",
+     *     in="query",
+     *     type="string",
+     *     description="Page number"
+     * )
+     * @SWG\Parameter(
+     *     name="limit",
+     *     in="query",
+     *     type="string",
+     *     description="Items per page"
+     * )
      */
     public function getReviews(Request $request, SerializerInterface $serializer): JsonResponse
     {
         $hotelId = $request->get('hotelId');
+        $page = $request->query->get('page', 1);
+        $limit = $request->query->get('limit', 10);
+        $offset = ($page - 1) * $limit;
 
         if ($hotelId === null) {
-            $reviews = $this->reviewRepository->findAll();
+            $reviews = $this->reviewRepository->findAll([], [], $limit, $offset);
         } else {
-            $reviews = $this->reviewRepository->findBy(['hotel' => $hotelId]);
+            $reviews = $this->reviewRepository->findBy(['hotel' => $hotelId], [], $limit, $offset);
         }
-        // dd($reviews[0]->getComment());
-        die(json_encode($reviews));
 
-        $data = $serializer->serialize($reviews, JsonEncoder::FORMAT);
-        return new JsonResponse($reviews, Response::HTTP_OK, [], true);
+        $response = [];
+
+        foreach ($reviews as $review) {
+            $response[] = [
+                'id' => $review->getId(),
+                'score' => $review->getScore(),
+                'comment' => $review->getComment(),
+            ];
+        }
+
+        $data = $serializer->serialize($response, JsonEncoder::FORMAT);
+
+        $response = new JsonResponse($data, Response::HTTP_OK, [], true);
+
+        // cache for 3600 seconds
+        $response->setSharedMaxAge(3600);
+
+        // (optional) set a custom Cache-Control directive
+        $response->headers->addCacheControlDirective('must-revalidate', true);
+
+        return $response;
     }
 
     /**
@@ -119,7 +160,7 @@ class ApiController extends AbstractController
      *     required=true,
      *     @SWG\Schema(
      *         type="object",
-     *         @SWG\Property(property="hotelId", type="number"),
+     *         @SWG\Property(property="hotelId", type="string"),
      *         @SWG\Property(property="score", type="number"),
      *         @SWG\Property(property="comment", type="string")
      *     )
@@ -128,10 +169,9 @@ class ApiController extends AbstractController
     public function postCreateReview(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
-
-        $hotelId = $data['hotelId'];
-        $score = $data['score'];
-        $comment = $data['comment'];
+        $hotelId = $data['hotelId'] ?? '';
+        $score = $data['score'] ?? 0;
+        $comment = $data['comment'] ?? '';
 
         if (empty($hotelId) || empty($score)) {
             throw new \Exception('Expecting mandatory parameters!');
@@ -140,7 +180,7 @@ class ApiController extends AbstractController
         $hotel = $this->hotelRepository->find($hotelId);
 
         if (!$hotel) {
-            throw new \Exception('Hotel not found.');
+            throw new NotFoundHttpException('Hotel not found.');
         }
 
         $this->reviewRepository->saveReview($hotel, $score, $comment);

@@ -1,0 +1,117 @@
+$prime-color: #65c6ba;
+$prime-bg: #b5e7e3;
+
+$danger-collor: #d94d5b;
+$danger-bg: #e8afb2;
+
+h1 {
+  color: $prime-color;
+}
+
+input {
+  &[type="radio"] {
+    width: 70px;
+    height: 70px;
+    border-radius: 50px;
+    background-color: #eeeeee;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    box-shadow: inset 0px 2px 4px 1px gray;
+  }
+
+  &[type="radio"]:focus {
+    outline: none;
+  }
+
+  &[type="radio"]:checked {
+    background-color: $prime-color;
+    box-shadow: none;
+  }
+
+  &[type="radio"]:checked ~ span:first-of-type {
+    color: white;
+  }
+}
+
+label {
+  float: left;
+  width: 5em;
+
+  span {
+    position: relative;
+    top: -12px;
+
+    &:first-of-type {
+      position: relative;
+      top: -55px;
+      left: 32px;
+      font-size: 19px;
+      color: gray;
+      font-family: monospace;
+    }
+  }
+
+  div:first-of-type {
+    position: absolute;
+    display: block;
+    margin: auto;
+  }
+}
+
+textarea {
+  width: 100%;
+  border-radius: 8px;
+  font-size: 18px;
+  padding: 5px;
+}
+
+button {
+  padding: 15px 50px;
+  background-color: #5b75bc;
+  border-radius: 10px;
+  color: white;
+  font-size: large;
+
+  &:disabled {
+    background: gray;
+  }
+}
+
+.comment {
+  width: 65%;
+}
+
+.helper-text {
+  float: right;
+}
+
+.icon {
+  transform: rotate(90deg);
+}
+
+.rewiew-form {
+  font-family: sans-serif;
+}
+
+.item {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  float: left;
+}
+
+.bage {
+  padding: 3px;
+  border-radius: 5px;
+  background-color: gray;
+}
+
+.red {
+  color: $danger-collor;
+  background-color: $danger-bg;
+}
+
+.green {
+  color: $prime-color;
+  background-color: $prime-bg;
+}

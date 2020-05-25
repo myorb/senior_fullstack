@@ -15,7 +15,7 @@ The task includes two parts:
 - The Hotel can potentially have thousands of reviews, so keep that in mind for performance considerations.
 - Currently, the average API is using hotelId, but Hotel entity should be identified by a UUID and have a relation to its Reviews.
 - To keep this task simple we are not generating other hashes or access keys for using this widget but simply stick to the UUID.
-- The response should be cached for clients for 1 hour.
+- The response should be cached for clients for 1 hour. (Works only for prod)
 
 ## Todo part two:
 

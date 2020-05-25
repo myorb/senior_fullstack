@@ -54,13 +54,13 @@ Encore
   })
 
   // enables Vue.js support
-  .enableVueLoader();
+  .enableVueLoader()
 
-// enables Sass/SCSS support
-//.enableSassLoader()
+  // enables Sass/SCSS support
+  .enableSassLoader();
 
 // uncomment if you use TypeScript
-//.enableTypeScriptLoader()
+// .enableTypeScriptLoader()
 
 // uncomment to get integrity="..." attributes on your script & link tags
 // requires WebpackEncoreBundle 1.4 or higher
