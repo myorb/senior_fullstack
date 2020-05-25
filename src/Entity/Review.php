@@ -19,11 +19,6 @@ class Review
     /**
      * @ORM\Column(type="integer")
      */
-    private $hotel_id;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
     private $score;
 
     /**
@@ -31,23 +26,15 @@ class Review
      */
     private $comment;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Hotel::class, inversedBy="reviews")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $hotel;
+
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-
-    public function getHotelId(): int
-    {
-        return $this->hotel_id;
-    }
-
-
-    public function setHotelId($hotel_id)
-    {
-        $this->hotel_id = $hotel_id;
-
-        return $this;
     }
 
     public function getScore(): ?int
@@ -70,6 +57,18 @@ class Review
     public function setComment(?string $comment): self
     {
         $this->comment = $comment;
+
+        return $this;
+    }
+
+    public function getHotel(): ?Hotel
+    {
+        return $this->hotel;
+    }
+
+    public function setHotel(?Hotel $hotel): self
+    {
+        $this->hotel = $hotel;
 
         return $this;
     }
