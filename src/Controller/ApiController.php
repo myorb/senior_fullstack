@@ -107,7 +107,15 @@ class ApiController extends AbstractController
 
         $data = $serializer->serialize($response, JsonEncoder::FORMAT);
 
-        return new JsonResponse($data, Response::HTTP_OK, [], true);
+        $response = new JsonResponse($data, Response::HTTP_OK, [], true);
+
+        // cache for 3600 seconds
+        $response->setSharedMaxAge(3600);
+
+        // (optional) set a custom Cache-Control directive
+        $response->headers->addCacheControlDirective('must-revalidate', true);
+
+        return $response;
     }
 
     /**
