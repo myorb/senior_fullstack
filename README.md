@@ -38,14 +38,11 @@ The task includes two parts:
 
 Please complete the task in three days.
 
-# Setup Maual
+# Setup
 
-- composer install
-- create schema
-- load fixtures
-- use the `symfony serve` or the builtin php server for development
+Higly recomend to use Docker and Mac OS
 
-# Setup Docker
+## Setup Docker
 
 You need install docker & docker-compose !
 
@@ -61,10 +58,20 @@ For more information use
 $make help
 ```
 
-# Development
+## Setup Maual
+
+- composer install
+- yarn install
+- create schema
+- load fixtures
+- use the `symfony serve` or the builtin php server for development
+- yarn run build
+
+## Tests
 
 ```bash
-yarn run watch
+make test
+yarn run test
 ```
 
 ## API doc
